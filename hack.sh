@@ -1,97 +1,106 @@
-  #!/bin/bash
+Skip to content
+Search or jump to…
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@hacker6291 
+cyberkallan
+/
+unfollower
+Public
+Code
+Issues
+1
+Pull requests
+Actions
+Projects
+Wiki
+Security
+Insights
+unfollower/unfollower.sh
+@cyberkallan
+cyberkallan Update unfollower.sh
+Latest commit 6f27cf0 on Oct 21, 2019
+ History
+ 2 contributors
+@cyberkallan@researchersource
+63 lines (45 sloc)  2.86 KB
+   
+# Unfollower v1.1
+# Author: https://github.com/cyberkallan/unfollower
 
-# colour 
-Black="\033[1;30m"       # Black
-Red="\033[1;31m"         # Red
-Green="\033[1;32m"       # Green
-Yellow="\033[1;33m"      # Yellow
-Blue="\033[1;34m"        # Blue
-Purple="\033[1;35m"      # Purple
-Cyan="\033[1;36m"        # Cyan
-White="\033[1;37m"       # White
+printf "\e[1;93m  _   _        __       _ _                         \n"
+printf " | | | |_ __  / _| ___ | | | _____      _____ _ __  \n"
+printf " | | | | '_ \| |_ / _ \| | |/ _ \ \ /\ / / _ \ '__| \n"
+printf " | |_| | | | |  _| (_) | | | (_) \ V  V /  __/ |    \n"
+printf "  \___/|_| |_|_|  \___/|_|_|\___/ \_/\_/ \___|_|෴c͔ͣͦ́́͂ͅy͉̝͖̻̯ͮ̒̂ͮ͋ͫͨb͎̣̫͈̥̗͒͌̃͑̔̾ͅe̮̟͈̣̖̰̩̹͈̾ͨ̑͑r̼̯̤̈ͭ̃ͨ̆ k̲̱̠̞̖ͧ̔͊̇̽̿̑ͯͅa̘̫͈̭͌͛͌̇̇̍l͕͖͉̭̰ͬ̍ͤ͆̊ͨl͕͖͉̭̰ͬ̍ͤ͆̊ͨa̘̫͈̭͌͛͌̇̇̍n͉̠̙͉̗̺̋̋̔ͧ̊෴    \e[0m\n\n"
+printf "    \e[1;77\e[0m\n\n"
+                                                   
 
-clear
-apt-get update
-apt-get upgrade
-apt-get install python
-apt-get install python2
-clear
-echo -e "$Green Created By \e[1;34m"
-       figlet Hacker6291 | lolcat
-sleep 2.0
+csrftoken=$(curl https://www.instagram.com/accounts/login/ajax -L -i -s | grep "csrftoken" | cut -d "=" -f2 | cut -d ";" -f1)
+unfollow() {
 
-    echo " "
-    echo -e "$Red                               ⫸ Coded by$Yellow xploits.tech$Red ⫷\033[0m"
-    echo -e "$Red                               ⫸$Purple X Hackers$Red ⫷\033[0m"
-echo " "
-echo -e " $Red       ||----------------------------$Cyan [features] $Blue ---------------------------||"
-echo -e " $Red       ||                                                                    ||"
-echo -e " $Red       ||             $Purple%=>$Yellow[1️⃣] Information Gaathering Tool$Blue                     ||"
-echo -e " $Red       ||             $Purple%=>️$Yellow[2️⃣] InstaBomber                        $Blue             ||"
-echo -e " $Red       ||             $Purple%=>$Yellow[3️⃣] Phishing hacks$Blue                                  ||"
-echo -e " $Red       ||             $Purple%=>$Yellow[4️⃣] InstaUnfollow   $Blue                                ||"
-echo -e " $Red       ||             $Purple%=>$Yellow[5️⃣] password checker$Blue                                    ||"
-echo -e " $Red       ||             $Purple%=>$Yellow[6️⃣] Email Bomber$Blue                                    ||"
-echo -e " $Red       ||             $Purple%=>$Yellow[7️⃣] FaceBook Brutoforce$Blue                                           ||"
-echo -e " $Red       ||             $Purple%=>$Yellow[8️⃣] exit$Blue                                            ||"
-echo -e " $Red       ||                                                                    ||"                                                                                       
-echo -e " $Red       ||---------------------------$Cyan [select option] $Blue -----------------------||"
-echo -e " $Blue      |---------------------------------------------------------------------|"
-echo " "
-echo " "
+while [ true ]; do
 
-    read ch
-   if [ $ch -eq 1 ];then
-        cd $HOME
-        git clone https://github.com/hacker6291/Toolkit.git
-         cd Toolkit
-         ls
-         python3 toolkit.py
+printf "\e[1;77m[+] Creating followers list\e[0m\n" 
+curl -s -b cookies.txt 'https://www.instagram.com/'$username'/following' -L > following_request.txt
+grep -o '"id":"[0-9]\{10\}"' following_request.txt | cut -d '"' -f4 > following_id
 
-        exit
-    elif [ $ch -eq 2 ];then 
-         cd $HOME
-         git clone https://github.com/hacker6291/InstaBomber.git
-         cd InstaBomber
-         ls
-         python3 crack.py
-        
-        exit
-    elif [ $ch -eq 3 ];then
-        git clone git://github.com/htr-tech/zphisher.git
-        cd zphisher
-        bash zphisher.sh
+for line in $(cat following_id); do
+printf "\e[1;77m[*] Trying to unfollow user id:\e[0m\e[1;93m %s\e[0m\n" $line
 
-        exit
-    elif [ $ch -eq 4 ];then
-        git clone --depth 1 https://github.com/v1s1t0r1sh3r3/airgeddon.git
-        cd airgeddon
-        sudo bash airgeddon.sh
+{( trap '' SIGINT && unfollow=$(curl -b cookies.txt -H 'Cookie: csrftoken='$csrftoken'' -H 'X-Instagram-AJAX: 1' -H 'Referer: https://www.instagram.com/' -H 'X-CSRFToken:'$csrftoken'' -H 'X-Requested-With: XMLHttpRequest' "https://www.instagram.com/web/friendships/$line/unfollow/" -s -L --request POST | grep -o '"status": "ok"'); if [[ "$unfollow" == *'"status": "ok"'* ]]; then printf "\e[1;92m[*] User unfollowed. Sleeping 10 sec...\e[0m\n" ; sleep 10 ; else printf "\e[1;93m[!] User not unfollowed. Sleeping 5min\e[0m\n" ; sleep 300 ; fi )} & wait $!;
 
-
-        exit
-    elif [ $ch -eq 5 ];then
-        echo -e "\e[1;34m Downloading Latest Files..."
-        cd $HOME
-        rm -rf Xteam
-        git clone https://github.com/xploitstech/Xteam
-        cd Xteam
-        bash Xteam.sh
-     
-        exit
-   elif [ $ch -eq 6 ];then 
-        cd $HOME
-        rm -rf Xteam
-        
-        exit
-   elif [ $ch -eq 7 ];then
-        echo -e  "\e[1;34m Downloading Latest Files..."
-        
-
-        
-        
-    else
-        echo -e "\e[4;32m Invalid Input !!! \e[0m"
-        pause
-    fi
 done
+done
+}
+
+
+login_user() {
+
+IFS=$'\n'
+default_username=""
+default_password=""
+
+if [[ "$default_username" == "" ]]; then
+read -p $'\e[1;92m[*] Username: \e[0m' username
+else
+username="${username:-${default_username}}"
+fi
+
+if [[ "$default_password" == "" ]]; then
+read -s -p $'\e[1;92m[*] Password: \e[0m' password
+else
+password="${password:-${default_password}}"
+fi
+
+printf "\e[\n1;77m[*] Trying to login as\e[0m\e[1;77m %s\e[0m\n" $username
+check_login=$(curl  -c cookies.txt 'https://www.instagram.com/accounts/login/ajax/' -H 'Cookie: csrftoken='$csrftoken'' -H 'X-Instagram-AJAX: 1' -H 'Referer: https://www.instagram.com/' -H 'X-CSRFToken:'$csrftoken'' -H 'X-Requested-With: XMLHttpRequest' --data 'username='$username'&password='$password'&intent' -L --compressed -s | grep -o '"authenticated": true')
+
+if [[ "$check_login" == *'"authenticated": true'* ]]; then
+printf "\e[1;92m[*] Login Successful!\e[0m\n"
+
+unfollow
+
+else
+printf "\e[1;93m[!] Check your login data or IP! Dont use Tor, VPN, Proxy. It's requires your usual IP.\n\e[0m"
+exit 1
+fi
+
+}
+login_user
+© 2022 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
+Loading complete
